@@ -6,29 +6,11 @@ from flask_login import login_user, current_user, logout_user, login_required
 import secrets, os
 from PIL import Image
 
-# posts = [
-#     {"author": "Jason",
-#      "title": "Artificial Intelligence",
-#      "posted_date": "Today",
-#      "content": "Something about artificial inelligence"
-#      },
-#     {"author": "Brody",
-#      "title": "Machine learning",
-#      "posted_date": "Yesterday",
-#      "content": "Machine learning is a sub field of artificial intelligence"
-#      },
-#     {"author": "Blog Bot",
-#      "title": "Deep learning",
-#      "posted_date": "Day before yesterday",
-#      "content": "Deep learning is a sub field of machine learning. We can do some cool stuff with deep learning"
-#      },
-# ]
-
-
 @app.route("/")
 @app.route("/home")
 def home():
-    posts = Post.query.all()
+    page_no = request.args.get("page",1,type=int)
+    posts = Post.query.order_by(Post.date_posted.desc()).paginate(per_page=3,page=page_no)
     return render_template("home.html", posts=posts)
 
 
@@ -152,3 +134,13 @@ def delete_post(post_id):
     db.session.commit()
     flash("Your post has been deleted!", "success")
     return redirect(url_for("home"))
+
+@app.route("/user/<username>")
+def user_posts(username):
+    username = str(username)
+    page_no = request.args.get("page",1,type=int)
+    user = User.query.filter_by(username=username).first_or_404()
+    posts = Post.query.filter_by(author=user)\
+            .order_by(Post.date_posted.desc())\
+            .paginate(per_page=3,page=page_no)
+    return render_template("user_posts.html", posts=posts,user = user)
