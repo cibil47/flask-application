@@ -14,7 +14,7 @@ login_manager.login_message_category = "info"
 
 def create_app(config_class = Config):
     app = Flask(__name__)
-    app.config.from_object(Config)
+    app.config.from_object(config_class)
 
     db.init_app(app)
     bcrypt.init_app(app)
@@ -24,9 +24,10 @@ def create_app(config_class = Config):
     from application.users.routes import users
     from application.posts.routes import posts
     from application.main.routes import main
+    from application.errors.handlers import errors
 
     app.register_blueprint(users)
     app.register_blueprint(posts)
     app.register_blueprint(main)
-
+    app.register_blueprint(errors)
     return app
