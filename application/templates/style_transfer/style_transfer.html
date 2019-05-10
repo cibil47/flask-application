@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1>Neural style transfer</h1>
+        {% for img in images %}
+        <div class="col-md-4 mt-1 float-left">
+            <img src="{{ url_for('static',filename='style_images/'+img) }}" class="img-fluid" style='height: 200px; width: 200px;'>
+        </div>
+        {% endfor %}
+{% endblock content %}
