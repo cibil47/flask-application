@@ -1,65 +1,41 @@
 {% extends "layout.html" %}
 {% block content %}
     <div class="content-section">
-        <form method="post" , action="">
-            {{ form.hidden_tag() }}
+        <form method="post" , action="" , id="regForm">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Join Today</legend>
+                <legend class="border-bottom mb-4">Join Today</legend>      <!-- class = "is-invalid"-->
                 <div class="form-group">
-                    {{ form.username.label(class="form-control-label") }}
-                    {% if form.username.errors %}
-                        {{ form.username(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.username.errors %}
-                            <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.username(class="form-control form-control-lg") }}
-                    {% endif %}
+                    <label for = "uname" class="form-control-label">Username</label>
+                    <input type="text" class="form-control form-control-lg" onfocusout="checkUsername()" id="uname" name="username" required>
+                    <div id="invalid_username" class="invalid-feedback">
+                        <span class="text-danger">Username is already taken.Please choose another one!!</span>
+                    </div>
                 </div>
                 <div class="form-group">
-                    {{ form.email.label(class="form-control-label") }}
-                    {% if form.email.errors %}
-                        {{ form.email(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.email.errors %}
-                            <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.email(class="form-control form-control-lg") }}
-                    {% endif %}
+                    <label for = "email" class="form-control-label">Email</label>
+                    <input type="email" class="form-control form-control-lg" onfocusout="checkEmail()" id="email" name="email" required>
+                    <div id="invalid_email" class="invalid-feedback">
+                        <span class="text-danger">Email is already taken.Plaese choose another one</span>
+                    </div>
                 </div>
                 <div class="form-group">
-                    {{ form.password.label(class="form-control-label") }}
-                    {% if form.password.errors %}
-                        {{ form.password(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.password.errors %}
-                            <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.password(class="form-control form-control-lg") }}
-                    {% endif %}
+                    <label for = "pass" class="form-control-label">Password</label>
+                    <input type="password" class="form-control form-control-lg" id="pass" name="password" required>
+                    <div class="invalid-feedback">
+                        <span></span>
+                    </div>
                 </div>
                 <div class="form-group">
-                    {{ form.confirm_password.label(class="form-control-label") }}
-                    {% if form.confirm_password.errors %}
-                        {{ form.confirm_password(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.confirm_password.errors %}
-                            <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.confirm_password(class="form-control form-control-lg") }}
-                    {% endif %}
+                    <label for = "cpass" class="form-control-label">Confirm Password</label>
+                    <input type="password" class="form-control form-control-lg" id="cpass" name="confirm_password" onfocusout="comparePassword()" required>
+                    <div id = "invalid-cpass" class="invalid-feedback">
+                        <span class="text-danger">Passwords doesn't match!!</span>
+                    </div>
                 </div>
             </fieldset>
             <div class="form-group">
-                {{ form.submit(class="btn btn-outline-info") }}
+                <input type="submit" class="btn btn-outline-info" value="Submit">
             </div>
         </form>
     </div>

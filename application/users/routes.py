@@ -3,22 +3,28 @@ from flask import render_template, url_for, flash, redirect, request,Blueprint
 from application.users.forms import RegistrationForm, LoginForm, UpdateAccountForm
 from application.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
-from application.users.utils import save_file
+from application.users.utils import save_file,check_username,check_email
+
 users = Blueprint("users",__name__)
 
 @users.route("/register", methods=["GET", "POST"])
 def register():
     if current_user.is_authenticated:
         return redirect(url_for("main.home"))
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
-        user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+    if request.method == "POST":
+        if check_username(request.form.get("username")) == "true":
+            flash("Username is already taken.Please choose another one!!","danger")
+            return redirect(url_for("users.register"))
+        if check_email(request.form.get("email")) == "true":
+            flash("Email is already taken.Plaese choose another one!!", "danger")
+            return redirect(url_for("users.register"))
+        hashed_password = bcrypt.generate_password_hash(request.form.get("password")).decode("utf-8")
+        user = User(username=request.form.get("username"), email=request.form.get("email"), password=hashed_password)
         db.session.add(user)
         db.session.commit()
         flash("Your account has been created!!", "success")
         return redirect(url_for("users.login"))
-    return render_template("register.html", title="Register", form=form)
+    return render_template("register.html", title="Register")
 
 
 @users.route("/login", methods=["GET", "POST"])
