@@ -31,16 +31,16 @@ def register():
 def login():
     if current_user.is_authenticated:
         return redirect(url_for("main.home"))
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-        if user and bcrypt.check_password_hash(user.password, form.password.data):
-            login_user(user, remember=form.remember.data)
+    if request.method == "POST":
+        print(request.form)
+        user = User.query.filter_by(email=request.form.get("email")).first()
+        if user and bcrypt.check_password_hash(user.password, request.form.get("password")):
+            login_user(user, remember=request.form.get("remember_me"))
             next_page = request.args.get("next")
             return redirect(next_page) if next_page else redirect(url_for("main.home"))
         else:
             flash("Login unsuccessful Please check your email or password", "danger")
-    return render_template("login.html", title="Login", form=form)
+    return render_template("login.html", title="Login")
 
 
 @users.route("/logout")
